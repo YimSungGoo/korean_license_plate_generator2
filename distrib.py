@@ -1,4 +1,5 @@
 import os
+os.getcwd()
 
 classes = []
 annotations = [file for file in os.listdir('./result/labels/')]

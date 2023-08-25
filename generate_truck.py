@@ -2,7 +2,7 @@ import os
 import random
 import cv2
 import numpy as np
-
+os.getcwd()
 
 class ImageGenerator:
     def __init__(self, save_path, plates_path, nums_path, chars_path, regions1, regions2, transparent=False):
@@ -127,27 +127,27 @@ class ImageGenerator:
                 row, col = 8, 76
                 x1, y1 = col, row
                 # region
-                label += self.region1_list[i % 16][4:]
+                label += self.region1_list[i % 1][4:]
                 Plate[row:row + 60, col:col + 44, :] = self.add(Plate[row:row + 60, col:col + 44, :],
-                                                                self.random_bright(region_1[i % 16]))
+                                                                self.random_bright(region_1[i % 1]))
 
                 col += 44
                 x2, y2 = col, y1 + 60
                 x_r, y_r = (x1 + x2) / (2 * 335), (y1 + y2) / (2 * 170)
                 w_r, h_r = (44 / 335), (60 / 170)
-                class_name = names.index(self.region1_list[i % 16][4:])
+                class_name = names.index(self.region1_list[i % 1][4:])
                 txt = f'{class_name} {x_r} {y_r} {w_r} {h_r}\n'
                 f.write(txt)
 
                 x3, y1 = x2, y1
-                label += self.region2_list[i % 16][4:]
+                label += self.region2_list[i % 1][4:]
                 Plate[row:row + 60, col:col + 44, :] = self.add(Plate[row:row + 60, col + 44:col + 88, :],
-                                                                self.random_bright(region_2[i % 16]))
+                                                                self.random_bright(region_2[i % 1]))
                 col += 44
                 x4, y2 = col, y2
                 x_r, y_r = (x3 + x4) / (2 * 335), (y1 + y2) / (2 * 170)
                 w_r, h_r = (44 / 335), (60 / 170)
-                class_name = names.index(self.region2_list[i % 16][4:])
+                class_name = names.index(self.region2_list[i % 1][4:])
                 txt = f'{class_name} {x_r} {y_r} {w_r} {h_r}\n'
                 f.write(txt)
 
@@ -277,27 +277,27 @@ class ImageGenerator:
                 row, col = 13, 25
                 x_0, y_0 = 25, 13
                 # region
-                label += self.region1_list[i % 16][4:]
+                label += self.region1_list[i % 1][4:]
                 Plate[row:row + 42, col:col + 60, :] = self.add(Plate[row:row + 42, col:col + 60, :],
-                                                                self.random_bright(region_1[i % 16]))
+                                                                self.random_bright(region_1[i % 1]))
 
                 x_1, y_1 = x_0 + 60, y_0 + 42
                 x_r, y_r = (x_0 + x_1) / (2 * 520), (y_0 + y_1) / (2 * 110)
                 w_r, h_r = (60 / 520), (42 / 110)
-                class_name = names.index(self.region1_list[i % 16][4:])
+                class_name = names.index(self.region1_list[i % 1][4:])
                 txt = f'{class_name} {x_r} {y_r} {w_r} {h_r}\n'
                 f.write(txt)
 
                 x_2, y_2 = x_0, y_0 + 42
 
                 Plate[row + 42:row + 84, col:col + 60, :] = self.add(Plate[row + 42:row + 84, col:col + 60, :],
-                                                                     self.random_bright(region_2[i % 16]))
+                                                                     self.random_bright(region_2[i % 1]))
 
                 x_3, y_3 = x_1, y_0 + 84
 
                 x_r, y_r = (x_2 + x_3) / (2 * 520), (y_2 + y_3) / (2 * 110)
                 w_r, h_r = (60 / 520), (42 / 110)
-                class_name = names.index(self.region2_list[i % 16][4:])
+                class_name = names.index(self.region2_list[i % 1][4:])
                 txt = f'{class_name} {x_r} {y_r} {w_r} {h_r}\n'
                 f.write(txt)
 
@@ -436,7 +436,7 @@ if __name__ == '__main__':
                                     regions1='./assets/region1/',
                                     regions2='./assets/region2/')
 
-    num_img = 5
+    num_img = 10
 
     TruckNP_type_1.Type_C(num_img, save=True)
-    TruckNP_type_2.Type_D(3 * num_img, save=True)
+    TruckNP_type_2.Type_D(3*num_img, save=True)
