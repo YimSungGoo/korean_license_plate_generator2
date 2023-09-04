@@ -2,8 +2,12 @@ import os
 import random
 import cv2
 import numpy as np
-os.getcwd()
+import argparse
 
+os.getcwd()
+regi1_list=['세']
+regi2_list=['종']
+truck_char_list=['아','바','배','자','사']
 class ImageGenerator:
     def __init__(self, save_path, plates_path, nums_path, chars_path, regions1, regions2, transparent=False):
         self.save_path = save_path
@@ -127,7 +131,7 @@ class ImageGenerator:
                 row, col = 8, 76
                 x1, y1 = col, row
                 # region
-                label += self.region1_list[i % 1][4:]
+                label += regi1_list[i % 1]
                 Plate[row:row + 60, col:col + 44, :] = self.add(Plate[row:row + 60, col:col + 44, :],
                                                                 self.random_bright(region_1[i % 1]))
 
@@ -140,7 +144,8 @@ class ImageGenerator:
                 f.write(txt)
 
                 x3, y1 = x2, y1
-                label += self.region2_list[i % 1][4:]
+                label += regi2_list[i % 1]
+
                 Plate[row:row + 60, col:col + 44, :] = self.add(Plate[row:row + 60, col + 44:col + 88, :],
                                                                 self.random_bright(region_2[i % 1]))
                 col += 44
@@ -183,7 +188,7 @@ class ImageGenerator:
 
                 x9, y3 = col, row
                 # character 3
-                label += self.char_list[i % 5]
+                label += truck_char_list[i % 5]
                 Plate[row:row + 62, col:col + 64, :] = self.add(Plate[row:row + 62, col:col + 64, :],
                                                                 self.random_bright(char[i % 5]))
                 col += 64
@@ -248,11 +253,17 @@ class ImageGenerator:
                 class_name = names.index(self.number_list[rand_int])
                 txt = f'{class_name} {x_r} {y_r} {w_r} {h_r}\n'
                 f.write(txt)
-
+                print(label)
                 Plate = self.random_bright(Plate)
+
+                type = '.jpg'
+                ret, img_arr = cv2.imencode(type, Plate)
+
                 if save:
                     txt = f'image_ax_{count_a}'
-                    cv2.imwrite(self.save_path + txt + ".jpg", Plate)
+                    # cv2.imwrite(self.save_path + txt + ".jpg", Plate)
+                    with open(self.save_path + label + ".jpg", mode='w+b') as f:
+                        img_arr.tofile(f)
                 else:
                     cv2.imshow(label, Plate)
                     cv2.waitKey(0)
@@ -266,18 +277,20 @@ class ImageGenerator:
         region_1 = [cv2.resize(region, (60, 42)) for region in self.Regions1]
         region_2 = [cv2.resize(region, (60, 42)) for region in self.Regions2]
         count_d = 0
+
         for p in self.list_:
             plate = cv2.imread(os.path.join(self.plate, p))
             for i in range(num):
                 f = open(f'./result/labels/image_dx_{count_d}.txt', 'a')
                 Plate = cv2.resize(plate, (520, 110))
-                label = "Z"
+                label = str()
+                # label = "Z"
                 # row -> y , col -> x
 
                 row, col = 13, 25
                 x_0, y_0 = 25, 13
                 # region
-                label += self.region1_list[i % 1][4:]
+                label += regi1_list[i % 1]
                 Plate[row:row + 42, col:col + 60, :] = self.add(Plate[row:row + 42, col:col + 60, :],
                                                                 self.random_bright(region_1[i % 1]))
 
@@ -288,8 +301,9 @@ class ImageGenerator:
                 txt = f'{class_name} {x_r} {y_r} {w_r} {h_r}\n'
                 f.write(txt)
 
+                # region2
                 x_2, y_2 = x_0, y_0 + 42
-
+                label += regi2_list[i % 1]
                 Plate[row + 42:row + 84, col:col + 60, :] = self.add(Plate[row + 42:row + 84, col:col + 60, :],
                                                                      self.random_bright(region_2[i % 1]))
 
@@ -332,7 +346,7 @@ class ImageGenerator:
                 col += 56
                 x3, y1 = x3, y1
                 # character 3
-                label += self.char_list[i % 5]
+                label += truck_char_list[i % 5]
                 Plate[row:row + 83, col:col + 60, :] = self.add(Plate[row:row + 83, col:col + 60, :],
                                                                 self.random_bright(char[i % 5]))
                 x4, y2 = x3 + 60, y2
@@ -400,8 +414,15 @@ class ImageGenerator:
                 col += 56
                 f.close()
 
+                print(label)
+
+                type = '.jpg'
+                ret, img_arr = cv2.imencode(type, Plate)
+
                 if save:
-                    cv2.imwrite(self.save_path + "image_dx_" + str(count_d) + ".jpg", Plate)
+                    # cv2.imwrite(self.save_path + "image_dx_" + str(count_d) + ".jpg", Plate)
+                    with open(self.save_path+label+".jpg", mode='w+b') as f:
+                        img_arr.tofile(f)
                     count_d += 1
                 else:
                     pass
@@ -436,7 +457,18 @@ if __name__ == '__main__':
                                     regions1='./assets/region1/',
                                     regions2='./assets/region2/')
 
-    num_img = 10
+    num_img = 1
 
-    TruckNP_type_1.Type_C(num_img, save=True)
-    TruckNP_type_2.Type_D(3*num_img, save=True)
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("-n", "--num", help="number of image",
+                        type=int, default=1)
+    parser.add_argument("-s", "--save", help="save or imshow",
+                        type=bool, default=True)
+    args = parser.parse_args()
+
+    num_img = args.num
+    Save = args.save
+
+    TruckNP_type_1.Type_C(num_img, Save)
+    TruckNP_type_2.Type_D(3*num_img, Save)
